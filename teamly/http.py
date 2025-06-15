@@ -11,9 +11,9 @@ class HTTPClient:
 
     async def connect(self):
         self.__session = aiohttp.ClientSession(base_url="https://api.teamly.one/api/v1/")
-        print(Fore.GREEN + "Client connected")
+        print(f"{__name__}: " + Fore.GREEN + "Client connected")
 
     async def close(self):
         await self.__session.close()
-        print(Fore.RED + "Client disconnected")
+        print(f"{__name__}: " + Fore.RED + "Client disconnected")
 

@@ -12,15 +12,15 @@ class Client:
 
     #Client'i calisiracak fonksiyon
     def run(self,token: str):
-        print("got token")
+        print(f"{__name__}: got token (token: {token})")
 
         async def runner():
             async with self:
-                print("starting")
+                print(f"{__name__}: starting")
                 await self.start(token)
 
         try:
-            print("running \"runner()\" function in asyncio")
+            print(f"{__name__}: running \"runner()\" function in asyncio")
             asyncio.run(runner())
         except KeyboardInterrupt:
             pass
@@ -29,7 +29,7 @@ class Client:
         return self
 
     async def __aexit__(self,exc_type, exc_value, traceback):
-        print("calling the function http.close()")
+        print(f"{__name__}: calling the function http.close()")
         await self.http.close()
 
     
