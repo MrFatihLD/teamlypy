@@ -3,12 +3,13 @@ from .http import HTTPClient
 
 class Client:
 
+    #initializing
     def __init__(self):
         self.http = HTTPClient()
 
     #HTTPClient ile oturum acar
     async def start(self,token):
-        await self.http.connect()
+        await self.connect()
 
     #Client'i calisiracak fonksiyon
     def run(self,token: str):
@@ -32,4 +33,21 @@ class Client:
         print(f"{__name__}: calling the function http.close()")
         await self.http.close()
 
+    async def connect(self):
+
+        await self.http.connect()
+
+        #bu while loop bizim Client'in kapatana kadar hep acik kalmasini saglar
+        while True:
+            await asyncio.sleep(2)
+
+
+
+
+
+
+
+
+            
+            
     
