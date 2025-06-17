@@ -13,15 +13,15 @@ class Client:
 
     #Client'i calisiracak fonksiyon
     def run(self,token: str):
-        print(f"{__name__}: got token (token: {token})")
+        print(f"{__name__}: got token (token: {token})") # Log
 
         async def runner():
             async with self:
-                print(f"{__name__}: starting")
+                print(f"{__name__}: starting") # Log
                 await self.start(token)
 
         try:
-            print(f"{__name__}: running \"runner()\" function in asyncio")
+            print(f"{__name__}: running \"runner()\" function in asyncio") # Log
             asyncio.run(runner())
         except KeyboardInterrupt:
             pass
@@ -30,7 +30,7 @@ class Client:
         return self
 
     async def __aexit__(self,exc_type, exc_value, traceback):
-        print(f"{__name__}: calling the function http.close()")
+        print(f"{__name__}: calling the function http.close()") # Log
         await self.http.close()
 
     async def connect(self):
@@ -39,7 +39,11 @@ class Client:
 
         #bu while loop bizim Client'in kapatana kadar hep acik kalmasini saglar
         while True:
-            await asyncio.sleep(2)
+            print("Client is running") # Log
+            await asyncio.sleep(5)
+    
+
+    
 
 
 
