@@ -34,22 +34,28 @@ class Client:
         return self
 
     async def __aexit__(self,exc_type, exc_value, traceback):
-        print(f"\n{__name__}: calling the function http.close() & socket.close()") # Log
-        await self.socket.close()
-        await self.http.close()
-
-        await self.cancel_tasks()
+        await self.close()
 
 
     async def connect(self, token: str):
 
-        await self.add_task(self.socket.connect(token))
         await self.http.connect()
+
+        await self.add_task(self.socket.connect(token))
+        await self.add_task(self.socket.keepalive())
 
         #bu while loop bizim Client'in kapatana kadar hep acik kalmasini saglar
         while True:
             print("Client is running") # Log
             await asyncio.sleep(5)
+
+    async def close(self):
+        print(f"\n{__name__}: calling the function http.close() & socket.close()") # Log
+
+        await self.socket.close()
+        await self.http.close()
+
+        await self.cancel_tasks()
     
     async def add_task(self, task):
         task = asyncio.create_task(task)
@@ -59,12 +65,11 @@ class Client:
     async def cancel_tasks(self):
         for task in self.tasks:
             task.cancel()
-        for task in self.tasks:
-            try:
-                await task
-                print("✅ Görev iptal edildi.")
-            except asyncio.CancelledError:
-                print("✅ Görev iptal edildi.")
+
+        await asyncio.gather(*self.tasks, return_exceptions=True)
+
+    async def listen(self):
+        pass
 
     
 
