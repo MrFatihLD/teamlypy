@@ -1,15 +1,19 @@
 import asyncio
 from .http import HTTPClient
+from .teamylsocket import TeamlySocketClient
+from typing import List
 
 class Client:
 
     #initializing
     def __init__(self):
         self.http = HTTPClient()
+        self.socket = TeamlySocketClient()
+        self.tasks: List[asyncio.Task] = []
 
     #HTTPClient ile oturum acar
     async def start(self,token):
-        await self.connect()
+        await self.connect(token)
 
     #Client'i calisiracak fonksiyon
     def run(self,token: str):
@@ -30,11 +34,16 @@ class Client:
         return self
 
     async def __aexit__(self,exc_type, exc_value, traceback):
-        print(f"{__name__}: calling the function http.close()") # Log
+        print(f"\n{__name__}: calling the function http.close() & socket.close()") # Log
+        await self.socket.close()
         await self.http.close()
 
-    async def connect(self):
+        await self.cancel_tasks()
 
+
+    async def connect(self, token: str):
+
+        await self.add_task(self.socket.connect(token))
         await self.http.connect()
 
         #bu while loop bizim Client'in kapatana kadar hep acik kalmasini saglar
@@ -42,6 +51,20 @@ class Client:
             print("Client is running") # Log
             await asyncio.sleep(5)
     
+    async def add_task(self, task):
+        task = asyncio.create_task(task)
+        self.tasks.append(task)
+        return task
+    
+    async def cancel_tasks(self):
+        for task in self.tasks:
+            task.cancel()
+        for task in self.tasks:
+            try:
+                await task
+                print("✅ Görev iptal edildi.")
+            except asyncio.CancelledError:
+                print("✅ Görev iptal edildi.")
 
     
 
