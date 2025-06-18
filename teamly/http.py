@@ -2,7 +2,7 @@ import aiohttp
 import asyncio
 import yarl
 
-from typing import ClassVar
+from typing import ClassVar, Optional
 
 '''The Route class takes the base URL from the Teamly API
  and appends the extra path required by the program.'''
@@ -19,8 +19,9 @@ class HTTPClient:
     
     def __init__(self):
         self.__session: aiohttp.ClientSession = None
+        self.connection: Optional[aiohttp.BaseConnector] = None
         self.token: str = None
-        self.ws_url: str | yarl.URL = "https://api.teamly.one/api/v1"
+        self.ws_url: str = "https://api.teamly.one/api/v1"
 
     #function to connect to WebSocket
     async def ws_connect(self, url: str) -> aiohttp.ClientWebSocketResponse:
