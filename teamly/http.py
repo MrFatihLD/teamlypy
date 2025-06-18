@@ -18,9 +18,27 @@ class Route:
 class HTTPClient:
     
     def __init__(self):
-        self._session: aiohttp.ClientSession = None
+        self.__session: aiohttp.ClientSession = None
         self.token: str = None
         self.ws_url: str | yarl.URL = "https://api.teamly.one/api/v1"
 
-    async def ws_connect(self, url: str):
-        return await self._session.ws_connect(self.ws_url)
+    #function to connect to WebSocket
+    async def ws_connect(self, url: str) -> aiohttp.ClientWebSocketResponse:
+        kwargs = {
+            "timeout": 30,
+            "autoclose": False,
+            "headers": {
+                "Authorization": "Bot " + self.token
+            }
+        }
+        return await self.__session.ws_connect(self.ws_url, **kwargs)
+    
+    #function to login to ClientSession
+    async def static_login(self, token: str):
+        pass
+    
+    #function will close the session
+    async def close(self):
+        if self.__session:
+            await self.__session.close()
+    
