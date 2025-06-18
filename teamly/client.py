@@ -1,15 +1,20 @@
 import asyncio
 from .http import HTTPClient
-from .teamylsocket import TeamlySocketClient
-from typing import List
+from .gateway import TeamlyWebSocket
+from typing import List, Dict, Any, Coroutine, Callable, TypeVar
+
+T = TypeVar('T')
+Coro = Coroutine[Any, Any, T]
+CoroT = TypeVar('CoroT', bound=Callable[..., Coro[Any]])
 
 class Client:
 
     #initializing
     def __init__(self):
         self.http = HTTPClient()
-        self.socket = TeamlySocketClient()
         self.tasks: List[asyncio.Task] = []
+        self._userInfo: Dict[Any] = {}
+        self._teamInfo: Dict[Any] = {}
 
     #HTTPClient ile oturum acar
     async def start(self,token):
@@ -41,18 +46,14 @@ class Client:
 
         await self.http.connect()
 
-        await self.add_task(self.socket.connect(token))
-        await self.add_task(self.socket.keepalive())
-
         #bu while loop bizim Client'in kapatana kadar hep acik kalmasini saglar
         while True:
             print("Client is running") # Log
             await asyncio.sleep(5)
 
     async def close(self):
-        print(f"\n{__name__}: calling the function http.close() & socket.close()") # Log
+        print(f"\n{__name__}: calling the function http.close()") # Log
 
-        await self.socket.close()
         await self.http.close()
 
         await self.cancel_tasks()
@@ -68,8 +69,6 @@ class Client:
 
         await asyncio.gather(*self.tasks, return_exceptions=True)
 
-    async def listen(self):
-        pass
 
     
 

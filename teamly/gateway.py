@@ -1,0 +1,2 @@
+class TeamlyWebSocket:
+    pass
