@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Union
 
 class _MissingSentinel:
     __slots__ = ()
@@ -16,3 +16,5 @@ class _MissingSentinel:
         return '...'
     
 MISSING: Any = _MissingSentinel()
+
+TwoType = Union[str,int]
