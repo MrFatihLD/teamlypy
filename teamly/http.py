@@ -1,5 +1,6 @@
 import aiohttp
 import asyncio
+import yarl
 
 from typing import ClassVar
 
@@ -18,3 +19,8 @@ class HTTPClient:
     
     def __init__(self):
         self._session: aiohttp.ClientSession = None
+        self.token: str = None
+        self.ws_url: str | yarl.URL = "https://api.teamly.one/api/v1"
+
+    async def ws_connect(self, url: str):
+        return await self._session.ws_connect(self.ws_url)
