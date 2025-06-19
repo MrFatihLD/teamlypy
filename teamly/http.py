@@ -1,6 +1,6 @@
 import aiohttp
 import asyncio
-import yarl
+import json
 from teamly.utils import MISSING, TwoType
 
 from typing import ClassVar, Optional, Any
@@ -82,6 +82,13 @@ class HTTPClient:
         if self.__session:
             await self.__session.close()
 
-    async def request():
-        pass
-    
+    async def request(
+            self,
+            route: Route,
+            **kwargs
+    ):
+        method = route.method
+        url = route.url
+
+        response = await self.__session.request(method, url)
+        print(json.dumps(response.text,indent=4))

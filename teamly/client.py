@@ -10,10 +10,10 @@ CoroT = TypeVar('CoroT', bound=Callable[..., Coro[Any]])
 class Client:
 
     def __init__(self):
-        pass
+        self.http = HTTPClient()
 
     async def start(self,token):
-        await self.connect(token)
+        await self.http.static_login(token)
 
     def run(self,token: str):
         
@@ -37,7 +37,7 @@ class Client:
         pass
 
     async def close(self):
-        pass
+        await self.http.close()
 
 
     
