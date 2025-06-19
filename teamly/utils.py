@@ -1,4 +1,6 @@
 from typing import Any, Union
+import logging
+from colorama import init, Fore
 
 class _MissingSentinel:
     __slots__ = ()
@@ -18,3 +20,21 @@ class _MissingSentinel:
 MISSING: Any = _MissingSentinel()
 
 TwoType = Union[str,int]
+
+
+LEVEL_COLOR = {
+    "DEBUG": Fore.LIGHTBLACK_EX,
+    "INFO": Fore.BLUE,
+    "WARNING": Fore.YELLOW,
+    "ERROR": Fore.MAGENTA,
+    "CRITICAL": Fore.RED
+}
+
+init(autoreset=True)
+class FormatLogging(logging.Formatter):
+    
+    def format(self, record):
+        level_color = LEVEL_COLOR.get(record.levelname,"")
+        record.levelname = f"{level_color} {record.levelname}"
+        return super().format(record)
+    
